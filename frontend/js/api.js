@@ -12,7 +12,7 @@
 // Detecta automáticamente si estamos en desarrollo (localhost) o producción
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
     ? 'http://localhost:8000'
-    : 'https://TU-BACKEND.onrender.com'; // ⚠️ IMPORTANTE: Cambiar por la URL real del backend en Render después del deploy
+    : 'https://web-production-daa0.up.railway.app'; // ✅ Backend desplegado en Railway
 
 /**
  * Muestra una notificación toast al usuario
