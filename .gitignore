@@ -1,0 +1,29 @@
+# Archivos de entorno (SECRETOS)
+.env
+
+# Carpeta de info local (no va al repo)
+_local_info/
+
+# Chats guardados (historial personal, no va al repo)
+docs/chats_register/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

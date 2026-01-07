@@ -1,0 +1,278 @@
+/* frontend/css/styles.css
+ * ============================================
+ * QUÉ HACE: Estilos custom que Tailwind/DaisyUI no cubren
+ * PROPÓSITO: Animaciones, transiciones y efectos especiales
+ * ============================================
+ */
+
+/* Animación de entrada para elementos */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animación de escala */
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Transición suave para cards */
+.card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Efecto glow en botón principal */
+.btn-primary {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+    left: 100%;
+}
+
+/* Efecto de hover en inputs */
+.input:focus {
+    transform: scale(1.01);
+    transition: transform 0.2s ease;
+}
+
+/* Animación del loading spinner personalizado */
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+    }
+}
+
+.loading.loading-ring {
+    animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Estilo para el contenedor del gráfico */
+#graficoContainer {
+    animation: fadeIn 0.5s ease-in;
+}
+
+/* Transición suave para el selector */
+.select {
+    transition: all 0.2s ease;
+}
+
+.select:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* Hover effect para cards del historial */
+#historialContainer .card {
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+#historialContainer .card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+}
+
+/* Animación para notificaciones toast */
+.toast .alert {
+    animation: scaleIn 0.3s ease;
+}
+
+/* Efecto ripple en botones (opcional) */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Scrollbar personalizado para el historial */
+#historialContainer::-webkit-scrollbar {
+    height: 8px;
+}
+
+#historialContainer::-webkit-scrollbar-track {
+    background: #1e293b;
+    border-radius: 4px;
+}
+
+#historialContainer::-webkit-scrollbar-thumb {
+    background: #475569;
+    border-radius: 4px;
+}
+
+#historialContainer::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/* Animación para badges */
+.badge {
+    transition: all 0.2s ease;
+}
+
+.badge:hover {
+    transform: scale(1.05);
+}
+
+/* Placeholder del gráfico con animación sutil */
+#placeholderGrafico {
+    animation: fadeIn 0.8s ease;
+}
+
+#placeholderGrafico svg {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Mejora visual para inputs con error */
+.input-error {
+    border-color: #ef4444 !important;
+    animation: shake 0.3s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Transición para el header */
+header {
+    animation: fadeIn 0.6s ease;
+}
+
+/* Footer con animación */
+footer {
+    animation: fadeIn 1s ease;
+}
+
+/* Smooth scroll en toda la página */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Mejoras de accesibilidad: focus visible */
+*:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Ocultar outline en clicks de mouse pero mantenerlo en teclado */
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Estilo para el renderizado de MathJax */
+#formulaDisplay .MathJax {
+    color: #f8fafc !important;
+}
+
+/* Responsive: ajustes para móvil */
+@media (max-width: 768px) {
+    .card {
+        transform: none;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    #historialContainer {
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Animaciones de carga inicial */
+.container {
+    animation: fadeIn 0.8s ease;
+}
+
+/* Efecto de brillo en el logo */
+header .bg-blue-500 {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    transition: box-shadow 0.3s ease;
+}
+
+header .bg-blue-500:hover {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.6);
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+/* Estilo especial para los valores en el historial */
+.badge-xs {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+}
+
+/* Mejora visual para el estado de conexión */
+#statusIndicator.bg-green-500 {
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+    0%, 100% {
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(34, 197, 94, 0.9);
+    }
+}
