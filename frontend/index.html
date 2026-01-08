@@ -94,13 +94,13 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="container mx-auto px-4 py-6">
+    <main class="px-4 py-6 max-w-full">
 
-        <!-- Grid 2 columnas: Gráfico (75%) + Panel (25%) -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <!-- Grid 2 columnas: Gráfico (80%) + Panel (20%) -->
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
-            <!-- ÁREA DE VISUALIZACIÓN: Gráfico (IZQUIERDA - 75%) -->
-            <div class="lg:col-span-3">
+            <!-- ÁREA DE VISUALIZACIÓN: Gráfico (IZQUIERDA - 80%) -->
+            <div class="lg:col-span-4">
                 <div class="card bg-slate-800 shadow-xl border border-slate-700" style="min-height: calc(100vh - 200px);">
                     <div class="card-body p-4">
                         <!-- Contenedor del gráfico Plotly -->
@@ -118,7 +118,7 @@
                 </div>
             </div>
 
-            <!-- PANEL DERECHO: Controles (DERECHA - 25%) -->
+            <!-- PANEL DERECHO: Controles (DERECHA - 20%) -->
             <div class="lg:col-span-1">
                 <!-- Grid horizontal: selector, variables, historial -->
                 <div class="card bg-slate-800 shadow-xl border border-slate-700">

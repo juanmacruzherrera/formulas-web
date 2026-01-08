@@ -171,21 +171,34 @@ def calcular_cardioide(a: float, theta_min: float, theta_max: float, puntos: int
 
 
 def calcular_lemniscata(a: float, theta_min: float, theta_max: float, puntos: int = 200) -> dict:
-    """Lemniscata: r² = a²*cos(2θ)"""
+    """Lemniscata: r² = a²*cos(2θ)
+
+    IMPORTANTE: Filtra valores ANTES de calcular para evitar NaN.
+    Solo calcula puntos donde cos(2θ) >= 0 (solución real existe).
+    """
     theta = np.linspace(theta_min, theta_max, puntos)
     cos_2theta = np.cos(2 * theta)
-    # Solo donde cos(2θ) >= 0
-    valid = cos_2theta >= 0
-    r = np.where(valid, a * np.sqrt(np.abs(cos_2theta)), np.nan)
-    x = r * np.cos(theta)
-    y = r * np.sin(theta)
-    # También el lado negativo
-    r_neg = np.where(valid, -a * np.sqrt(np.abs(cos_2theta)), np.nan)
-    x_neg = r_neg * np.cos(theta)
-    y_neg = r_neg * np.sin(theta)
-    # Combinar ambos lados
-    x_full = np.concatenate([x, x_neg])
-    y_full = np.concatenate([y, y_neg])
+
+    # FILTRAR: Solo puntos donde cos(2θ) >= 0 (evita NaN)
+    valid_mask = cos_2theta >= 0
+    theta_valid = theta[valid_mask]
+    cos_2theta_valid = cos_2theta[valid_mask]
+
+    # Calcular r solo para valores válidos (sin NaN)
+    r = a * np.sqrt(cos_2theta_valid)
+
+    # Lado positivo
+    x_pos = r * np.cos(theta_valid)
+    y_pos = r * np.sin(theta_valid)
+
+    # Lado negativo (simetría)
+    x_neg = -r * np.cos(theta_valid)
+    y_neg = -r * np.sin(theta_valid)
+
+    # Combinar ambos lados (sin NaN, JSON válido)
+    x_full = np.concatenate([x_pos, x_neg])
+    y_full = np.concatenate([y_pos, y_neg])
+
     return {"x": x_full.tolist(), "y": y_full.tolist()}
 
 
