@@ -443,3 +443,69 @@ async function cargarCalculoDeHistorial(calculoId) {
 
 // Exponer funciones globalmente para onclick en HTML
 window.cargarCalculoDeHistorial = cargarCalculoDeHistorial;
+
+// ============================================
+// REDISEÑO V2.0: Toggle panel + Tabs 2D/3D
+// 8 Enero 2026
+// ============================================
+
+/**
+ * Inicializar funcionalidad del toggle del panel de controles
+ */
+function initToggleControls() {
+    const toggleBtn = document.getElementById('toggleControls');
+    const content = document.getElementById('controlsContent');
+    const icon = document.getElementById('toggleIcon');
+    
+    if (!toggleBtn || !content) return;
+    
+    toggleBtn.addEventListener('click', () => {
+        const isHidden = content.classList.contains('hidden');
+        
+        if (isHidden) {
+            // Expandir
+            content.classList.remove('hidden');
+            toggleBtn.classList.remove('collapsed');
+        } else {
+            // Colapsar
+            content.classList.add('hidden');
+            toggleBtn.classList.add('collapsed');
+        }
+    });
+}
+
+/**
+ * Inicializar funcionalidad de tabs 2D/3D
+ */
+function initTabs() {
+    const tab2D = document.getElementById('tab2D');
+    const tab3D = document.getElementById('tab3D');
+    
+    if (!tab2D || !tab3D) return;
+    
+    tab2D.addEventListener('click', () => {
+        tab2D.classList.add('tab-active');
+        tab3D.classList.remove('tab-active');
+        console.log('🎨 Modo 2D activado');
+        // TODO FASE 6.4: Filtrar fórmulas 2D
+    });
+    
+    tab3D.addEventListener('click', () => {
+        tab3D.classList.add('tab-active');
+        tab2D.classList.remove('tab-active');
+        console.log('🎨 Modo 3D activado');
+        // TODO FASE 6.4: Filtrar fórmulas 3D
+    });
+}
+
+// Inicializar cuando el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        initToggleControls();
+        initTabs();
+    });
+} else {
+    // DOM ya está listo
+    initToggleControls();
+    initTabs();
+}

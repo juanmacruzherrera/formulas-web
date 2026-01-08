@@ -183,3 +183,327 @@ Si hay algún problema, el usuario lo reportará y lo corregiremos.
 
 ---
 
+
+## FASE 6.2: REDISEÑO UI BASE
+
+**Objetivo:** Cambiar layout para que el gráfico sea el protagonista (70-80% pantalla)
+**Fecha inicio:** 8 Enero 2026 - 15:00h
+
+### 6.2.1 - Plan del nuevo layout
+
+**Problema actual:**
+- Gráfico ocupa solo 2/3 del ancho (66%)
+- Panel de controles a la derecha quita espacio
+- NO hay separación entre 2D y 3D
+- NO hay panel colapsable
+
+**Solución propuesta:**
+```
+┌──────────────────────────────────────────────────────────┐
+│  HEADER: Logo + [2D] [3D]  (60px altura)                │
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│                GRÁFICO                                   │
+│                (75-80% altura viewport)                  │
+│                                                          │
+├──────────────────────────────────────────────────────────┤
+│  PANEL COLAPSABLE (▼)                                    │
+│  [Selector] [Variables] [Calcular] [Historial]          │
+└──────────────────────────────────────────────────────────┘
+```
+
+**Cambios HTML:**
+1. Añadir tabs 2D/3D en el header
+2. Cambiar grid de 2 columnas → estructura vertical
+3. Hacer panel de controles colapsable con botón toggle
+4. Usar `min-height: 75vh` para el gráfico
+
+**Cambios CSS:**
+1. Layout: `display: flex; flex-direction: column`
+2. Gráfico: `flex-grow: 1; min-height: 70vh`
+3. Panel controles: `transition` para animación collapse
+4. Responsive: ajustar alturas en móvil (60vh)
+
+**Archivos a modificar:**
+- `frontend/index.html` (estructura completa)
+- `frontend/css/styles.css` (nuevo layout + responsive)
+
+Voy a realizar los cambios paso por paso documentando cada modificación.
+
+---
+
+### 6.2.2 - Cambios realizados en HTML (index.html)
+
+**Fecha:** 8 Enero 2026 - 15:30h
+
+**Archivo:** `frontend/index.html`
+
+#### Cambio 1: Header con tabs 2D/3D
+
+**Qué cambié:**
+```diff
+--- Header ANTES (una línea, logo y estado)
++ Header AHORA (dos líneas: logo+estado, tabs 2D/3D)
+
+- <header class="bg-slate-800 shadow-lg border-b border-slate-700">
+-     <div class="container mx-auto px-4 py-6">
+-         <div class="flex items-center justify-between">
++ <header class="bg-slate-800 shadow-lg border-b border-slate-700">
++     <div class="container mx-auto px-4 py-4">
++         <!-- Línea 1: Logo + Estado -->
++         <div class="flex items-center justify-between mb-3">
+              ...
++         </div>
++         
++         <!-- Línea 2: Tabs 2D/3D -->
++         <div class="flex items-center gap-2">
++             <button id="tab2D" class="tab-redesign tab-active">
++                 <svg>...</svg>
++                 <span>Gráficos 2D</span>
++             </button>
++             <button id="tab3D" class="tab-redesign">
++                 <svg>...</svg>
++                 <span>Gráficos 3D</span>
++             </button>
++         </div>
++     </div>
+```
+
+**Por qué:**
+- Separar 2D y 3D es un requisito clave del rediseño
+- Los tabs permiten filtrar fórmulas por dimensión
+- Mejora la UX (usuario sabe qué tipo de gráficos está viendo)
+
+#### Cambio 2: Layout principal de 2 columnas → vertical
+
+**Qué cambié:**
+```diff
+--- Layout ANTES (grid 2 columnas: gráfico izq, controles der)
++ Layout AHORA (vertical: gráfico arriba 75vh, controles abajo)
+
+- <main class="container mx-auto px-4 py-8">
+-     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+-         <div class="lg:col-span-2">
+-             <!-- Gráfico -->
+-         </div>
+-         <div class="lg:col-span-1">
+-             <!-- Controles -->
+-         </div>
+-     </div>
+- </main>
+
++ <main class="main-redesign">
++     <div class="visualization-area-redesign">
++         <div class="graph-container-redesign">
++             <!-- Gráfico ocupa 75vh -->
++         </div>
++     </div>
++     
++     <div class="controls-panel-redesign">
++         <button id="toggleControls" class="toggle-controls-btn">
++             <!-- Toggle button -->
++         </button>
++         <div id="controlsContent" class="controls-content-redesign">
++             <!-- Controles (colapsable) -->
++         </div>
++     </div>
++ </main>
+```
+
+**Por qué:**
+- Gráfico es el protagonista (objetivo: 70-80% pantalla)
+- Layout anterior desperdiciaba espacio horizontal
+- Panel colapsable libera aún más espacio cuando no se necesita
+
+---
+
+### 6.2.3 - Cambios realizados en CSS (styles.css)
+
+**Fecha:** 8 Enero 2026 - 15:45h
+
+**Archivo:** `frontend/css/styles.css`
+
+**Qué añadí:**
+```css
+/* Main layout vertical */
+.main-redesign {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 120px);
+}
+
+/* Área de visualización: 75-80% de la pantalla */
+.visualization-area-redesign {
+    flex: 1;
+    min-height: 70vh; /* ← CLAVE: 70% viewport height */
+}
+
+.graph-container-redesign {
+    min-height: 70vh;
+    max-width: 1800px;
+    /* En 1920px → 75vh */
+    /* En 2560px → 80vh */
+}
+
+/* Panel de controles colapsable */
+.controls-content-redesign {
+    max-height: 600px;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.controls-content-redesign.hidden {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+/* Tabs 2D/3D */
+.tab-redesign {
+    padding: 0.5rem 1rem;
+    border: 1px solid #334155;
+    background: #1e293b;
+}
+
+.tab-redesign.tab-active {
+    background: #3b82f6; /* ← Azul cuando activo */
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .visualization-area-redesign {
+        min-height: 60vh; /* Móvil: 60% */
+    }
+}
+
+@media (min-width: 1920px) {
+    .graph-container-redesign {
+        min-height: 75vh; /* Monitor grande: 75% */
+    }
+}
+
+@media (min-width: 2560px) {
+    .graph-container-redesign {
+        min-height: 80vh; /* Ultrawide: 80% */
+    }
+}
+```
+
+**Por qué:**
+- `min-height: 70vh` garantiza que el gráfico ocupa 70-80% de la pantalla
+- `flex: 1` hace que el área de visualización crezca y empuje el panel abajo
+- Media queries adaptan la altura según el dispositivo
+- Transiciones suaves (`0.4s ease`) para collapse animado
+
+---
+
+### 6.2.4 - Cambios realizados en JavaScript (app.js)
+
+**Fecha:** 8 Enero 2026 - 15:50h
+
+**Archivo:** `frontend/js/app.js`
+
+**Qué añadí:**
+```javascript
+function initToggleControls() {
+    const toggleBtn = document.getElementById('toggleControls');
+    const content = document.getElementById('controlsContent');
+    
+    toggleBtn.addEventListener('click', () => {
+        const isHidden = content.classList.contains('hidden');
+        
+        if (isHidden) {
+            content.classList.remove('hidden');  // Expandir
+        } else {
+            content.classList.add('hidden');     // Colapsar
+        }
+    });
+}
+
+function initTabs() {
+    const tab2D = document.getElementById('tab2D');
+    const tab3D = document.getElementById('tab3D');
+    
+    tab2D.addEventListener('click', () => {
+        tab2D.classList.add('tab-active');
+        tab3D.classList.remove('tab-active');
+        // TODO FASE 6.4: Filtrar fórmulas 2D
+    });
+    
+    tab3D.addEventListener('click', () => {
+        tab3D.classList.add('tab-active');
+        tab2D.classList.remove('tab-active');
+        // TODO FASE 6.4: Filtrar fórmulas 3D
+    });
+}
+```
+
+**Por qué:**
+- Toggle permite ocultar controles para maximizar espacio del gráfico
+- Tabs cambian el estado visual (funcionalidad de filtro viene en FASE 6.4)
+- Event listeners simples y claros
+
+---
+
+### 6.2.5 - TEST: Verificación del nuevo layout
+
+**Fecha:** 8 Enero 2026 - 16:00h
+
+**Tests a realizar:**
+
+#### TEST 1: Gráfico ocupa >70% de la pantalla
+**Pasos:**
+1. Abrir en navegador
+2. Medir altura del gráfico vs altura total viewport
+3. Verificar que gráfico ocupa al menos 70% en desktop
+
+**Resultado esperado:**
+- ✅ Desktop (1920x1080): Gráfico ~75% altura
+- ✅ Tablet (768px): Gráfico ~65% altura
+- ✅ Móvil (375px): Gráfico ~60% altura
+
+#### TEST 2: Panel de controles es colapsable
+**Pasos:**
+1. Hacer clic en botón "Configuración"
+2. Verificar que el panel se colapsa con animación
+3. Hacer clic de nuevo → panel se expande
+
+**Resultado esperado:**
+- ✅ Animación suave (0.4s ease)
+- ✅ Icono rota 180° al colapsar
+- ✅ Espacio del gráfico aumenta al colapsar panel
+
+#### TEST 3: Tabs 2D/3D cambian de estado
+**Pasos:**
+1. Hacer clic en "Gráficos 3D"
+2. Verificar que se pone azul
+3. "Gráficos 2D" se pone gris
+4. Hacer clic en "Gráficos 2D" → vuelve a azul
+
+**Resultado esperado:**
+- ✅ Solo un tab activo a la vez
+- ✅ Tab activo tiene color azul (#3b82f6)
+- ✅ Transición suave
+
+#### TEST 4: Responsive en diferentes tamaños
+**Pasos:**
+1. Abrir DevTools → Responsive mode
+2. Probar en 375px (móvil)
+3. Probar en 768px (tablet)
+4. Probar en 1920px (desktop)
+5. Probar en 2560px (ultrawide)
+
+**Resultado esperado:**
+- ✅ 375px: Gráfico 60vh, panel ajustado
+- ✅ 768px: Gráfico 65vh
+- ✅ 1920px: Gráfico 75vh
+- ✅ 2560px: Gráfico 80vh
+- ✅ Sin scroll horizontal en ningún tamaño
+
+**Estado:**
+⏳ **ESPERANDO CONFIRMACIÓN VISUAL DEL USUARIO**
+
+El layout está implementado siguiendo las especificaciones del documento de arquitectura.
+Si hay algún problema visual o funcional, se reportará y corregirá.
+
+---

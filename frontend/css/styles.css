@@ -299,3 +299,151 @@ input[type="number"]::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
+/* ============================================
+ * REDISEÑO V2.0 - LAYOUT VERTICAL
+ * 8 Enero 2026 - Gráfico protagonista
+ * ============================================ */
+
+/* Main layout vertical */
+.main-redesign {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 120px); /* viewport - header - footer aprox */
+    gap: 0;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+}
+
+/* Área de visualización: 75-80% de la pantalla */
+.visualization-area-redesign {
+    flex: 1;
+    min-height: 70vh;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.graph-container-redesign {
+    width: 100%;
+    max-width: 1800px;
+    height: 100%;
+    min-height: 70vh;
+    background: #1e293b;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Panel de controles en la parte inferior */
+.controls-panel-redesign {
+    background: #0f172a;
+    border-top: 1px solid #334155;
+    width: 100%;
+}
+
+/* Botón toggle para colapsar/expandir */
+.toggle-controls-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background: #1e293b;
+    border: none;
+    color: #3b82f6;
+    font-weight: 600;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-controls-btn:hover {
+    background: #334155;
+}
+
+.toggle-controls-btn svg {
+    transition: transform 0.3s ease;
+}
+
+.toggle-controls-btn.collapsed svg {
+    transform: rotate(180deg);
+}
+
+/* Contenido del panel (colapsable) */
+.controls-content-redesign {
+    max-height: 600px;
+    overflow-y: auto;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    padding: 1rem;
+}
+
+.controls-content-redesign.hidden {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0;
+}
+
+/* Tabs 2D/3D */
+.tab-redesign {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #94a3b8;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tab-redesign:hover {
+    background: #334155;
+    color: #f1f5f9;
+}
+
+.tab-redesign.tab-active {
+    background: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .visualization-area-redesign {
+        min-height: 60vh;
+        padding: 0.5rem;
+    }
+    
+    .graph-container-redesign {
+        min-height: 60vh;
+        border-radius: 8px;
+    }
+    
+    .controls-content-redesign {
+        max-height: 500px;
+    }
+}
+
+@media (min-width: 1920px) {
+    .graph-container-redesign {
+        max-width: 2200px;
+        min-height: 75vh;
+    }
+}
+
+@media (min-width: 2560px) {
+    .graph-container-redesign {
+        max-width: 2600px;
+        min-height: 80vh;
+    }
+}
