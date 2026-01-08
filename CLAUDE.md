@@ -1,10 +1,34 @@
 # CLAUDE.md - Instrucciones para Claude Code
 
-## 📋 TAREA ACTUAL
+## 📋 TAREA ACTUAL: REDISEÑO COMPLETO v2.0
 
-**Lee:** `docs/INSTRUCCIONES_FASE5.md`
+**FASE 6: REDISEÑO + BUGS + 3D + ANIMACIONES**
 
-Ejecuta pasos 2-6 (bugs + preparar deploy). Pasos 1, 7, 8 los hace Juan manualmente.
+**📖 DOCUMENTOS CLAVE:**
+1. **PLAN ORIGINAL (Opus):** `docs/REDISENO_COMPLETO_V2.md`
+2. **ESTADO ACTUAL (8 Enero 2026):** `docs/contexto_opus/20260108_estado_fase_6_4_problemas.md` ⭐
+3. **REGISTRO DE CAMBIOS:** `docs/aprendizaje/17_rediseno_v2.md`
+
+**⚠️ LEER PRIMERO:** `docs/contexto_opus/20260108_estado_fase_6_4_problemas.md`
+Este documento contiene:
+- ✅ Lo que está completo (FASES 6.1, 6.2, 6.3, Backend 6.4)
+- ❌ 5 problemas críticos del frontend con soluciones detalladas
+- 📍 Ubicación exacta de cada error (archivo + líneas)
+- 💻 Código faltante con ejemplos completos
+- 📋 Checklist de tareas pendientes con prioridades
+
+**🎯 OBJETIVOS PRINCIPALES:**
+1. **Inputs limpios** - Sin spinners, escribir números directamente
+2. **Separar 2D y 3D** - Tabs para cada sección
+3. **Animación temporal** - Ver cómo se construye la gráfica
+4. **Gráfico protagonista** - 70-80% de la pantalla
+5. **Responsive** - Adaptarse a móvil → monitor 27"
+6. **Nuevas fórmulas 3D** - Hélice, Lorenz, Toro, Ondas
+
+**URLs de producción:**
+- Frontend: https://formulas-web.pages.dev
+- Backend: https://web-production-daa0.up.railway.app
+- GitHub: https://github.com/juanmacruzherrera/formulas-web
 
 ---
 
