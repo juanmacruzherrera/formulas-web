@@ -887,3 +887,95 @@ Documentación lista para próxima sesión con Opus o continuación.
 **FIN FASE 6.4 - ESTADO: ⚠️ PARCIALMENTE COMPLETO**
 
 **Siguiente paso:** Corregir los 5 problemas del frontend para completar funcionalidad 3D.
+
+---
+
+### 6.4.7 - Integración con Google AI Studio (Gemini)
+
+**Fecha:** 8 Enero 2026 - 20:15h
+
+**Qué hice:**
+Creé infraestructura completa para colaborar con Gemini 2.0 (Google AI Studio).
+
+**Motivación:**
+- Gemini tiene 2M tokens de contexto (vs 200k de Claude)
+- Puede ver TODO el proyecto de golpe
+- Segunda opinión para detectar errores que Claude no ve
+- Colaboración entre IAs para mejores soluciones
+
+**Archivos creados:**
+
+1. **Carpeta:** `docs/gemini/`
+2. **Script:** `docs/gemini/generar_contexto_gemini.py`
+   - Recorre backend + frontend
+   - Ignora basura (venv, node_modules, .git)
+   - Genera MD con TODO el código
+   - Consulta Supabase para esquema de BD
+3. **Contexto:** `docs/gemini/contexto_completo_proyecto.md`
+   - 130 KB (~40k tokens)
+   - Todo el código Python + JS + HTML + CSS
+   - Esquema completo de Supabase
+   - Instrucciones para usar en AI Studio
+4. **Documentación:** `docs/gemini/README.md`
+   - Cómo usar el script
+   - Cómo subir a AI Studio
+   - Flujos de trabajo Claude+Gemini
+   - Ventajas de la estrategia
+
+**Uso del script:**
+```bash
+cd /Volumes/Akitio01/Claude_MCP/formulas-web
+source venv/bin/activate
+python3 docs/gemini/generar_contexto_gemini.py
+```
+
+**Salida:**
+```
+✅ Contexto generado en: docs/gemini/contexto_completo_proyecto.md
+📊 Tamaño: 127.6 KB
+📄 Listo para subir a Google AI Studio
+```
+
+**Actualizado:** `CLAUDE.md`
+```diff
++**🤖 COLABORACIÓN CON GEMINI:**
++- Script: docs/gemini/generar_contexto_gemini.py
++- Contexto: docs/gemini/contexto_completo_proyecto.md (130 KB)
++- Ver: docs/gemini/README.md para instrucciones
+```
+
+**Flujos de trabajo definidos:**
+
+1. **Segunda opinión:**
+   - Claude detecta problemas
+   - Regenerar contexto → Subir a Gemini
+   - Gemini analiza y sugiere
+   - Comparar soluciones
+
+2. **Gemini como implementador:**
+   - Subir contexto + prompt de Opus
+   - Gemini genera código
+   - Claude revisa
+   - Implementar
+
+3. **Colaboración continua:**
+   - Regenerar contexto después de cambios
+   - Gemini detecta posibles bugs
+   - Claude implementa correcciones
+
+**Ventajas vs otros métodos:**
+
+| Método | Problema | Solución |
+|--------|----------|----------|
+| Subir .zip | Gemini no lo "descomprime" | MD con código legible |
+| Arrastrar carpeta | 100+ archivos, node_modules | 1 archivo limpio |
+| Manual | Copiar/pegar tedioso | Script automático |
+
+**Próximos pasos:**
+1. Usuario sube contexto a Google AI Studio
+2. Gemini analiza los 5 problemas de FASE 6.4
+3. Comparar soluciones Gemini vs Claude/Opus
+4. Implementar la mejor solución
+
+**Conclusión:** ✅ Infraestructura lista para colaboración multi-IA
+

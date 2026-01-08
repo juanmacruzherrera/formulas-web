@@ -8,8 +8,15 @@
 1. **PLAN ORIGINAL (Opus):** `docs/REDISENO_COMPLETO_V2.md`
 2. **ESTADO ACTUAL (8 Enero 2026):** `docs/contexto_opus/20260108_estado_fase_6_4_problemas.md` ⭐
 3. **REGISTRO DE CAMBIOS:** `docs/aprendizaje/17_rediseno_v2.md`
+4. **CONTEXTO PARA GEMINI:** `docs/gemini/` (Ver README.md)
 
 **⚠️ LEER PRIMERO:** `docs/contexto_opus/20260108_estado_fase_6_4_problemas.md`
+
+**🤖 COLABORACIÓN CON GEMINI:**
+- Script: `docs/gemini/generar_contexto_gemini.py`
+- Contexto: `docs/gemini/contexto_completo_proyecto.md` (130 KB, todo el código)
+- Uso: Para segunda opinión o implementación paralela
+- Ver: `docs/gemini/README.md` para instrucciones completas
 Este documento contiene:
 - ✅ Lo que está completo (FASES 6.1, 6.2, 6.3, Backend 6.4)
 - ❌ 5 problemas críticos del frontend con soluciones detalladas
