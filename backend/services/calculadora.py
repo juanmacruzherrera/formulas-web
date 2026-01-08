@@ -202,6 +202,139 @@ def calcular_lemniscata(a: float, theta_min: float, theta_max: float, puntos: in
     return {"x": x_full.tolist(), "y": y_full.tolist()}
 
 
+# ============================================
+# FÓRMULAS 3D
+# ============================================
+
+def calcular_helice(r: float, c: float, t_min: float, t_max: float, puntos: int = 200) -> dict:
+    """Hélice 3D: x = r·cos(t), y = r·sin(t), z = c·t
+
+    Args:
+        r: Radio de la hélice
+        c: Constante de elevación (pitch)
+        t_min: Tiempo inicial
+        t_max: Tiempo final
+        puntos: Número de puntos a calcular
+
+    Returns:
+        dict: {"x": [...], "y": [...], "z": [...]}
+    """
+    t = np.linspace(t_min, t_max, puntos)
+    x = r * np.cos(t)
+    y = r * np.sin(t)
+    z = c * t
+
+    return {"x": x.tolist(), "y": y.tolist(), "z": z.tolist()}
+
+
+def calcular_lorenz(sigma: float, rho: float, beta: float, t_max: float, puntos: int = 2000) -> dict:
+    """Atractor de Lorenz: Sistema de ecuaciones diferenciales
+
+    dx/dt = σ(y - x)
+    dy/dt = x(ρ - z) - y
+    dz/dt = xy - βz
+
+    Args:
+        sigma: Parámetro σ (típicamente 10)
+        rho: Parámetro ρ (típicamente 28)
+        beta: Parámetro β (típicamente 8/3)
+        t_max: Tiempo máximo de simulación
+        puntos: Número de puntos a calcular
+
+    Returns:
+        dict: {"x": [...], "y": [...], "z": [...]}
+    """
+    dt = t_max / puntos
+
+    # Condiciones iniciales
+    x, y, z = 1.0, 1.0, 1.0
+
+    # Arrays para almacenar resultados
+    xs, ys, zs = [x], [y], [z]
+
+    # Integración usando método de Euler
+    for _ in range(puntos - 1):
+        dx = sigma * (y - x) * dt
+        dy = (x * (rho - z) - y) * dt
+        dz = (x * y - beta * z) * dt
+
+        x += dx
+        y += dy
+        z += dz
+
+        xs.append(x)
+        ys.append(y)
+        zs.append(z)
+
+    return {"x": xs, "y": ys, "z": zs}
+
+
+def calcular_toro(R: float, r: float, u_min: float, u_max: float, v_min: float, v_max: float, puntos_u: int = 50, puntos_v: int = 50) -> dict:
+    """Toro 3D (dona): Superficie paramétrica
+
+    x = (R + r·cos(v))·cos(u)
+    y = (R + r·cos(v))·sin(u)
+    z = r·sin(v)
+
+    Args:
+        R: Radio mayor (centro del tubo al centro del toro)
+        r: Radio menor (radio del tubo)
+        u_min, u_max: Rango para parámetro u (ángulo mayor)
+        v_min, v_max: Rango para parámetro v (ángulo menor)
+        puntos_u, puntos_v: Número de puntos en cada dirección
+
+    Returns:
+        dict: {"x": [...], "y": [...], "z": [...]}
+    """
+    u = np.linspace(u_min, u_max, puntos_u)
+    v = np.linspace(v_min, v_max, puntos_v)
+    u, v = np.meshgrid(u, v)
+
+    x = (R + r * np.cos(v)) * np.cos(u)
+    y = (R + r * np.cos(v)) * np.sin(u)
+    z = r * np.sin(v)
+
+    # Aplanar arrays para devolver lista 1D
+    return {
+        "x": x.flatten().tolist(),
+        "y": y.flatten().tolist(),
+        "z": z.flatten().tolist()
+    }
+
+
+def calcular_ondas_3d(amplitud: float, frecuencia: float, x_min: float, x_max: float, y_min: float, y_max: float, puntos: int = 50) -> dict:
+    """Ondas 3D: z = A·sin(f·√(x²+y²))
+
+    Genera una superficie de ondas circulares concéntricas.
+
+    Args:
+        amplitud: Amplitud de las ondas (A)
+        frecuencia: Frecuencia de las ondas (f)
+        x_min, x_max: Rango en X
+        y_min, y_max: Rango en Y
+        puntos: Número de puntos en cada dirección
+
+    Returns:
+        dict: {"x": [...], "y": [...], "z": [...]}
+    """
+    x = np.linspace(x_min, x_max, puntos)
+    y = np.linspace(y_min, y_max, puntos)
+    x, y = np.meshgrid(x, y)
+
+    # Calcular distancia desde el origen
+    r = np.sqrt(x**2 + y**2)
+
+    # Calcular altura de la onda
+    z = amplitud * np.sin(frecuencia * r)
+
+    # Aplanar arrays para devolver lista 1D
+    return {
+        "x": x.flatten().tolist(),
+        "y": y.flatten().tolist(),
+        "z": z.flatten().tolist()
+    }
+
+
 # Bloque de prueba (solo se ejecuta si ejecutamos este archivo directamente)
 if __name__ == "__main__":
     print("🧮 Probando función calcular_mru()...\n")

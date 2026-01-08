@@ -33,7 +33,12 @@ from backend.services.calculadora import (
     calcular_espiral_arquimedes,
     calcular_espiral_logaritmica,
     calcular_cardioide,
-    calcular_lemniscata
+    calcular_lemniscata,
+    # Funciones 3D
+    calcular_helice,
+    calcular_lorenz,
+    calcular_toro,
+    calcular_ondas_3d
 )
 
 # Crear router con prefijo /api y etiqueta "calculos"
@@ -225,6 +230,50 @@ def calcular(datos: DatosCalculo):
                 a=datos.valores.get("a", 5),
                 theta_min=rango_min,
                 theta_max=rango_max
+            )
+
+        # ============================================
+        # FÓRMULAS 3D
+        # ============================================
+
+        elif "Hélice" in formula["nombre"]:
+            resultado = calcular_helice(
+                r=datos.valores.get("r", 5),
+                c=datos.valores.get("c", 0.5),
+                t_min=rango_min,
+                t_max=rango_max
+            )
+
+        elif "Lorenz" in formula["nombre"]:
+            resultado = calcular_lorenz(
+                sigma=datos.valores.get("sigma", 10),
+                rho=datos.valores.get("rho", 28),
+                beta=datos.valores.get("beta", 8/3),
+                t_max=rango_max,
+                puntos=datos.valores.get("puntos", 2000)
+            )
+
+        elif "Toro" in formula["nombre"]:
+            resultado = calcular_toro(
+                R=datos.valores.get("R", 3),
+                r=datos.valores.get("r", 1),
+                u_min=datos.valores.get("u_min", 0),
+                u_max=datos.valores.get("u_max", 6.28),
+                v_min=datos.valores.get("v_min", 0),
+                v_max=datos.valores.get("v_max", 6.28),
+                puntos_u=datos.valores.get("puntos_u", 50),
+                puntos_v=datos.valores.get("puntos_v", 50)
+            )
+
+        elif "Ondas 3D" in formula["nombre"]:
+            resultado = calcular_ondas_3d(
+                amplitud=datos.valores.get("amplitud", 1),
+                frecuencia=datos.valores.get("frecuencia", 1),
+                x_min=datos.valores.get("x_min", -5),
+                x_max=datos.valores.get("x_max", 5),
+                y_min=datos.valores.get("y_min", -5),
+                y_max=datos.valores.get("y_max", 5),
+                puntos=datos.valores.get("puntos", 50)
             )
 
         else:
