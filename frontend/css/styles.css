@@ -276,3 +276,26 @@ header .bg-blue-500:hover {
         box-shadow: 0 0 15px rgba(34, 197, 94, 0.9);
     }
 }
+
+/* ============================================
+ * REDISEÑO V2.0 - 8 Enero 2026
+ * Inputs numéricos sin spinners (flechas)
+ * ============================================ */
+
+/* Ocultar spinners en inputs type="number" */
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Para Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
