@@ -324,9 +324,66 @@ function renderizarMiniaturaGrafico(contenedorId, datos) {
     );
 }
 
+/**
+ * Renderiza un gráfico con animación (punto por punto)
+ * NUEVO en v2.0: Usa el sistema de animación de animacion.js
+ * @param {Object} datosCalculo - Objeto con resultado del cálculo
+ * @param {Object} formula - Objeto con información de la fórmula
+ * @param {boolean} conAnimacion - Si true, anima; si false, renderiza directo (default: true)
+ */
+function renderizarGraficoAnimado(datosCalculo, formula, conAnimacion = true) {
+    const contenedor = document.getElementById('graficoContainer');
+    const placeholder = document.getElementById('placeholderGrafico');
+
+    // Ocultar mensaje placeholder
+    if (placeholder) {
+        placeholder.style.display = 'none';
+    }
+
+    const resultado = datosCalculo.resultado;
+
+    // Si no hay sistema de animación o no se quiere animación, usar método tradicional
+    if (!window.animacion || !conAnimacion) {
+        renderizarGrafico(datosCalculo, formula);
+        return;
+    }
+
+    // DETECTAR si es 2D o 3D
+    const es3D = resultado.z !== undefined;
+
+    if (es3D) {
+        // Gráfico 3D con animación
+        console.log('🎨 Renderizando gráfico 3D con animación');
+        window.animacion.animarCurva3D(resultado, 5000);
+    } else {
+        // Gráfico 2D con animación
+        console.log('🎨 Renderizando gráfico 2D con animación');
+
+        // Preparar datos según el tipo
+        let datos = { x: [], y: [] };
+
+        if (resultado.t !== undefined) {
+            // Fórmulas temporales (t, x) o (t, y)
+            datos.x = resultado.t;
+            datos.y = resultado.x || resultado.y;
+        } else if (resultado.theta !== undefined) {
+            // Curvas paramétricas polares
+            datos.x = resultado.x;
+            datos.y = resultado.y;
+        } else {
+            // Funciones matemáticas (x, y)
+            datos.x = resultado.x;
+            datos.y = resultado.y;
+        }
+
+        window.animacion.animarCurva2D(datos, 3000);
+    }
+}
+
 // Exportar funciones para uso global
 window.graficos = {
     renderizarGrafico,
+    renderizarGraficoAnimado,  // ← NUEVA función con animación
     actualizarGrafico,
     limpiarGrafico,
     renderizarMiniaturaGrafico,

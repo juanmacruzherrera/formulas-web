@@ -94,37 +94,32 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="main-redesign">
+    <main class="container mx-auto px-4 py-6">
 
-        <!-- ÁREA DE VISUALIZACIÓN: Gráfico (ARRIBA - 75vh) -->
-        <div class="visualization-area-redesign">
-            <div class="graph-container-redesign">
-                <!-- Contenedor del gráfico Plotly -->
-                <div id="graficoContainer" class="w-full h-full">
-                    <!-- Mensaje inicial -->
-                    <div id="placeholderGrafico" class="flex flex-col items-center justify-center h-full text-slate-400 space-y-4">
-                        <svg class="w-24 h-24 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                        </svg>
-                        <p class="text-lg">Selecciona una fórmula y haz clic en <strong class="text-blue-400">Calcular</strong></p>
-                        <p class="text-sm text-slate-500">El gráfico interactivo aparecerá aquí</p>
+        <!-- Grid 2 columnas: Gráfico (75%) + Panel (25%) -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+
+            <!-- ÁREA DE VISUALIZACIÓN: Gráfico (IZQUIERDA - 75%) -->
+            <div class="lg:col-span-3">
+                <div class="card bg-slate-800 shadow-xl border border-slate-700" style="min-height: calc(100vh - 200px);">
+                    <div class="card-body p-4">
+                        <!-- Contenedor del gráfico Plotly -->
+                        <div id="graficoContainer" class="w-full" style="min-height: calc(100vh - 240px);">
+                            <!-- Mensaje inicial -->
+                            <div id="placeholderGrafico" class="flex flex-col items-center justify-center h-full text-slate-400 space-y-4" style="min-height: calc(100vh - 240px);">
+                                <svg class="w-24 h-24 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                                </svg>
+                                <p class="text-lg">Selecciona una fórmula y haz clic en <strong class="text-blue-400">Calcular</strong></p>
+                                <p class="text-sm text-slate-500">El gráfico interactivo aparecerá aquí</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- PANEL DE CONTROLES (ABAJO - Colapsable) -->
-        <div class="controls-panel-redesign" id="controlsPanel">
-            <!-- Botón Toggle para colapsar/expandir -->
-            <button id="toggleControls" class="toggle-controls-btn">
-                <svg id="toggleIcon" class="w-5 h-5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                <span id="toggleText">Configuración</span>
-            </button>
-
-            <!-- Contenido del panel (colapsable) -->
-            <div id="controlsContent" class="controls-content-redesign">
+            <!-- PANEL DERECHO: Controles (DERECHA - 25%) -->
+            <div class="lg:col-span-1">
                 <!-- Grid horizontal: selector, variables, historial -->
                 <div class="card bg-slate-800 shadow-xl border border-slate-700">
                     <div class="card-body">
@@ -222,6 +217,7 @@
 
     <!-- Scripts: Orden de carga importante -->
     <script src="js/api.js"></script>
+    <script src="js/animacion.js"></script>
     <script src="js/graficos.js"></script>
     <script src="js/app.js"></script>
 </body>

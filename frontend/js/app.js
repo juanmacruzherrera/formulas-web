@@ -170,8 +170,19 @@ function generarInputsDinamicos(formula) {
     const container = document.getElementById('inputsContainer');
     container.innerHTML = '';
 
-    // Obtener variables de usuario de la fórmula
-    const variables = formula.variables_usuario || {};
+    // FIX: variables_usuario a veces viene como STRING en lugar de OBJECT
+    // Cuando viene como string '{"x0": 0, "v0": 5}', hay que parsearlo
+    let variables = formula.variables_usuario || {};
+
+    if (typeof variables === 'string') {
+        try {
+            variables = JSON.parse(variables);
+            console.log('✅ variables_usuario parseado de string a object');
+        } catch (e) {
+            console.error('❌ Error al parsear variables_usuario:', e);
+            variables = {};
+        }
+    }
 
     // 1. Generar inputs para cada variable en variables_usuario
     Object.entries(variables).forEach(([nombreVar, valorDefecto]) => {
