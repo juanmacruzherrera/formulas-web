@@ -12,6 +12,10 @@
 let formulasDisponibles = [];
 let formulaActual = null;
 
+// Variables globales para filtrado
+let todasLasFormulas = [];
+let modoActual = '2d';
+
 /**
  * Inicializa la aplicación cuando el DOM está listo
  */
@@ -45,36 +49,39 @@ async function cargarFormulas() {
     const selector = document.getElementById('formulaSelector');
 
     // Obtener fórmulas
-    formulasDisponibles = await api.obtenerFormulas();
+    const formulas = await api.obtenerFormulas();
+    todasLasFormulas = formulas; // NUEVO: Guardar todas
 
-    if (formulasDisponibles.length === 0) {
-        selector.innerHTML = '<option disabled selected>No hay fórmulas disponibles</option>';
-        return;
-    }
+    // Filtrar según modo actual
+    filtrarFormulas(modoActual);
+}
 
-    // Limpiar selector
+function filtrarFormulas(modo) {
+    const selector = document.getElementById('formulaSelector');
     selector.innerHTML = '';
 
-    // Añadir opción por defecto
-    const optionDefault = document.createElement('option');
-    optionDefault.disabled = true;
-    optionDefault.selected = true;
-    optionDefault.textContent = 'Selecciona una fórmula...';
-    selector.appendChild(optionDefault);
+    // Opción por defecto
+    const optDefault = document.createElement('option');
+    optDefault.disabled = true;
+    optDefault.selected = true;
+    optDefault.textContent = 'Selecciona una fórmula...';
+    selector.appendChild(optDefault);
 
-    // Añadir cada fórmula como opción
-    formulasDisponibles.forEach(formula => {
+    // Filtrar: 3D = categoria 'geometria_3d', 2D = todo lo demás
+    const filtradas = modo === '3d'
+        ? todasLasFormulas.filter(f => f.categoria === 'geometria_3d')
+        : todasLasFormulas.filter(f => f.categoria !== 'geometria_3d');
+
+    filtradas.forEach(formula => {
         const option = document.createElement('option');
         option.value = formula.id;
         option.textContent = formula.nombre;
-        option.dataset.categoria = formula.categoria;
         selector.appendChild(option);
     });
 
-    // Seleccionar la primera fórmula automáticamente
-    if (formulasDisponibles.length > 0) {
-        selector.selectedIndex = 1; // Índice 1 (la primera fórmula real)
-        await cargarFormulaSeleccionada();
+    // Seleccionar primera si hay
+    if (filtradas.length > 0) {
+        selector.selectedIndex = 1;
     }
 }
 
@@ -287,6 +294,29 @@ function configurarEventListeners() {
     // Botón refrescar historial
     const btnRefrescar = document.getElementById('btnRefrescarHistorial');
     btnRefrescar.addEventListener('click', cargarHistorial);
+
+    // NUEVO: Tabs 2D/3D
+    const tab2D = document.getElementById('tab2D');
+    const tab3D = document.getElementById('tab3D');
+
+    if (tab2D && tab3D) {
+        tab2D.addEventListener('click', () => {
+            modoActual = '2d';
+            tab2D.classList.add('tab-active');
+            tab3D.classList.remove('tab-active');
+            filtrarFormulas('2d');
+        });
+
+        tab3D.addEventListener('click', () => {
+            modoActual = '3d';
+            tab3D.classList.add('tab-active');
+            tab2D.classList.remove('tab-active');
+            filtrarFormulas('3d');
+        });
+
+        // Activar 2D por defecto
+        tab2D.classList.add('tab-active');
+    }
 }
 
 /**

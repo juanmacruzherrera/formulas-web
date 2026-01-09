@@ -127,6 +127,41 @@ function renderizarGrafico(datosCalculo, formula) {
     }
 
     const resultado = datosCalculo.resultado;
+
+    // NUEVO: Detectar si es 3D
+    const es3D = resultado.z !== undefined && Array.isArray(resultado.z) && resultado.z.length > 0;
+
+    if (es3D) {
+        // Renderizado 3D
+        const trace = {
+            type: 'scatter3d',
+            mode: 'lines',
+            x: resultado.x,
+            y: resultado.y,
+            z: resultado.z,
+            line: {
+                color: resultado.z,
+                colorscale: 'Viridis',
+                width: 3
+            }
+        };
+
+        const layout = {
+            scene: {
+                xaxis: { title: 'X', gridcolor: '#334155', color: '#94a3b8' },
+                yaxis: { title: 'Y', gridcolor: '#334155', color: '#94a3b8' },
+                zaxis: { title: 'Z', gridcolor: '#334155', color: '#94a3b8' },
+                bgcolor: '#0f172a',
+                camera: { eye: { x: 1.5, y: 1.5, z: 1.2 } }
+            },
+            paper_bgcolor: '#0f172a',
+            margin: { l: 0, r: 0, t: 30, b: 0 }
+        };
+
+        Plotly.newPlot(contenedor, [trace], layout, { responsive: true });
+        return; // Salir, no ejecutar código 2D
+    }
+
     let xData, yData, xLabel, yLabel, hoverTemplate;
 
     // DETECTAR TIPO DE DATOS según las claves presentes

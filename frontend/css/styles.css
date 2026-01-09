@@ -417,6 +417,12 @@ input[type="number"] {
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
 }
 
+.tab-active {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+    color: white !important;
+    border-color: #3b82f6 !important;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .visualization-area-redesign {

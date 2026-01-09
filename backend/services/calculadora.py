@@ -227,32 +227,13 @@ def calcular_helice(r: float, c: float, t_min: float, t_max: float, puntos: int 
     return {"x": x.tolist(), "y": y.tolist(), "z": z.tolist()}
 
 
-def calcular_lorenz(sigma: float, rho: float, beta: float, t_max: float, puntos: int = 2000) -> dict:
-    """Atractor de Lorenz: Sistema de ecuaciones diferenciales
-
-    dx/dt = σ(y - x)
-    dy/dt = x(ρ - z) - y
-    dz/dt = xy - βz
-
-    Args:
-        sigma: Parámetro σ (típicamente 10)
-        rho: Parámetro ρ (típicamente 28)
-        beta: Parámetro β (típicamente 8/3)
-        t_max: Tiempo máximo de simulación
-        puntos: Número de puntos a calcular
-
-    Returns:
-        dict: {"x": [...], "y": [...], "z": [...]}
-    """
+def calcular_lorenz(sigma: float = 10.0, rho: float = 28.0, beta: float = 2.667,
+                    t_max: float = 50.0, puntos: int = 5000) -> dict:
+    """Atractor de Lorenz con protección contra NaN/Inf"""
     dt = t_max / puntos
-
-    # Condiciones iniciales
     x, y, z = 1.0, 1.0, 1.0
-
-    # Arrays para almacenar resultados
     xs, ys, zs = [x], [y], [z]
 
-    # Integración usando método de Euler
     for _ in range(puntos - 1):
         dx = sigma * (y - x) * dt
         dy = (x * (rho - z) - y) * dt
@@ -261,6 +242,12 @@ def calcular_lorenz(sigma: float, rho: float, beta: float, t_max: float, puntos:
         x += dx
         y += dy
         z += dz
+
+        # Protección: si explota, parar
+        if not (np.isfinite(x) and np.isfinite(y) and np.isfinite(z)):
+            break
+        if abs(x) > 1000 or abs(y) > 1000 or abs(z) > 1000:
+            break
 
         xs.append(x)
         ys.append(y)
