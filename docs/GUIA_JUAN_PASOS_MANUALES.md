@@ -53,47 +53,37 @@ CREATE POLICY "calculos_escritura_publica" ON calculos
 
 ---
 
-## PASO 7: DEPLOY BACKEND EN RENDER
+## PASO 7: DEPLOY BACKEND EN RAILWAY.APP
 
-### Qué es Render:
-Un servicio que ejecuta tu código Python en internet 24/7. Gratis para proyectos pequeños.
+### Qué es Railway:
+Un servicio que ejecuta tu código Python en internet 24/7. **500 horas gratis al mes, SIN TARJETA DE CRÉDITO.**
 
-### Antes de empezar:
-- Tu código debe estar en GitHub (si no está, primero sube el proyecto)
+### Ventajas sobre Render:
+✅ NO pide tarjeta de crédito
+✅ Más fácil de configurar
+✅ Deploy automático más rápido
 
-### Instrucciones:
+### ⚠️ GUÍA COMPLETA AQUÍ:
+👉 **Lee:** `docs/GUIA_RAILWAY_DEPLOY.md` (paso a paso con capturas)
 
-1. **Abre Render:** https://render.com
-2. **Click "Get Started for Free"** → Registrarte con GitHub
-3. **Dashboard → "New +"** → **"Web Service"**
-4. **"Connect a repository"** → Busca `formulas-web` → Click "Connect"
-5. **Configurar:**
+### Resumen rápido:
 
-| Campo | Valor |
-|-------|-------|
-| Name | `formulas-api` |
-| Region | Frankfurt (EU Central) - el más cercano a España |
-| Branch | `main` |
-| Runtime | `Python 3` |
-| Build Command | `pip install -r requirements.txt` |
-| Start Command | `uvicorn backend.main:app --host 0.0.0.0 --port $PORT` |
-
-6. **Scroll abajo → "Advanced" → "Add Environment Variable":**
-
-| Key | Value |
-|-----|-------|
-| `SUPABASE_URL` | (copia de tu archivo .env) |
-| `SUPABASE_KEY` | (copia de tu archivo .env) |
-
-7. **Click "Create Web Service"**
-8. **Espera 2-5 minutos** (verás logs de instalación)
-9. **Cuando termine:** Te da una URL tipo `https://formulas-api.onrender.com`
+1. **Ir a Railway:** https://railway.app
+2. **Login with GitHub**
+3. **New Project** → **Deploy from GitHub repo**
+4. **Seleccionar:** `juanmacruzherrera/formulas-web`
+5. **Click en tu servicio** → Pestaña **"Variables"**
+6. **Añadir variables:**
+   - `SUPABASE_URL` = `https://qfeatlcnilhqjcacniih.supabase.co`
+   - `SUPABASE_KEY` = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` (tu clave)
+7. **Settings** → **Networking** → **Generate Domain**
+8. **Copiar URL** (ej: `https://formulas-web-production.up.railway.app`)
 
 ### Verificar que funcionó:
 
 Abre en el navegador:
 ```
-https://formulas-api.onrender.com/health
+https://TU-URL-RAILWAY.up.railway.app/health
 ```
 
 Debe mostrar:
@@ -102,8 +92,8 @@ Debe mostrar:
 ```
 
 ### Si algo falla:
-- Revisa los logs en Render (botón "Logs")
-- Error común: olvidar las variables de entorno SUPABASE_URL y SUPABASE_KEY
+- Revisa los logs en Railway (pestaña "Deployments")
+- Error común: olvidar generar el dominio público en Settings → Networking
 
 ---
 
@@ -113,8 +103,8 @@ Debe mostrar:
 Hosting gratuito para archivos estáticos (HTML/CSS/JS). Muy rápido, CDN global.
 
 ### Antes de empezar:
-- Tienes que haber completado el PASO 7 (necesitas la URL de Render)
-- Actualizar `frontend/js/api.js` con la URL de Render (esto lo hace Claude Code en paso 6)
+- Tienes que haber completado el PASO 7 (necesitas la URL de Railway)
+- Actualizar `frontend/js/api.js` con la URL de Railway (esto lo hace Claude Code en paso 6)
 
 ### Instrucciones:
 
@@ -147,8 +137,8 @@ Hosting gratuito para archivos estáticos (HTML/CSS/JS). Muy rápido, CDN global
 ### Si el gráfico no aparece:
 - Abre la consola del navegador (F12 → Console)
 - Si dice "CORS error" o "Failed to fetch":
-  - Verifica que `api.js` tiene la URL correcta de Render
-  - Verifica que el backend en Render está funcionando
+  - Verifica que `api.js` tiene la URL correcta de Railway
+  - Verifica que el backend en Railway está funcionando
 
 ---
 
@@ -179,9 +169,9 @@ PASO PREVIO:
 └─ ⚠️  Subir a GitHub (docs/GUIA_GIT_GITHUB.md) ← HAZLO PRIMERO
 
 PASOS MANUALES:
-1. ⏳ Activar RLS en Supabase (este documento, paso 1)
+1. ✅ Activar RLS en Supabase (YA HECHO por Juan)
 2. ✅ Claude Code ejecuta pasos 2-6 (YA HECHO)
-3. ⏳ Deploy backend en Render (este documento, paso 7)
+3. ⏳ Deploy backend en Railway (este documento, paso 7 + GUIA_RAILWAY_DEPLOY.md)
 4. ⏳ Deploy frontend en Cloudflare (este documento, paso 8)
 ```
 
@@ -191,8 +181,8 @@ PASOS MANUALES:
 
 | Qué | URL |
 |-----|-----|
-| Supabase (BD) | https://xxxxx.supabase.co |
-| Render (Backend) | https://formulas-api.onrender.com |
+| Supabase (BD) | https://qfeatlcnilhqjcacniih.supabase.co |
+| Railway (Backend) | https://formulas-web-production.up.railway.app |
 | Cloudflare (Frontend) | https://formulas-web.pages.dev |
 
 ---
@@ -219,17 +209,17 @@ PASOS MANUALES:
 - Cards verticales adaptadas
 
 **PASO 6:** Archivos de deploy preparados
-- ✅ `Procfile` creado para Render
+- ✅ `Procfile` creado para Railway
 - ✅ `api.js` con detección de entorno (localhost vs producción)
 - ✅ `.gitignore` verificado (incluye .env, venv/, __pycache__)
 
 ### ⚠️ IMPORTANTE ANTES DEL PASO 8:
 
-Después de completar el PASO 7 (deploy backend en Render), necesitas actualizar la URL del backend:
+Después de completar el PASO 7 (deploy backend en Railway), necesitas actualizar la URL del backend:
 
 1. **Editar** `frontend/js/api.js`
-2. **Línea 15:** Cambiar `https://TU-BACKEND.onrender.com` por la URL real que te dio Render
-3. **Ejemplo:** Si Render te dio `https://formulas-api.onrender.com`, pon eso
+2. **Línea 15:** Cambiar `https://TU-BACKEND.onrender.com` por la URL real que te dio Railway
+3. **Ejemplo:** Si Railway te dio `https://formulas-web-production.up.railway.app`, pon eso
 4. **Guardar** y hacer commit:
    ```bash
    cd /Volumes/Akitio01/Claude_MCP/formulas-web
@@ -243,17 +233,23 @@ Después de completar el PASO 7 (deploy backend en Render), necesitas actualizar
 - `docs/aprendizaje/16_fase5_mejoras_ui_deploy.md` - Explicación completa de todos los cambios
 - `docs/bitacora.md` - Entrada actualizada con resumen de Fase 5
 
+### Documentación generada (ACTUALIZADA 7 Enero 2026):
+
+- `docs/aprendizaje/16_fase5_mejoras_ui_deploy.md` - Explicación completa
+- `docs/GUIA_RAILWAY_DEPLOY.md` - **NUEVA** - Guía paso a paso para Railway
+- `docs/bitacora.md` - Entrada actualizada
+
 ### Tu turno:
 
 **PRIMERO:**
-0. ⚠️ **Subir a GitHub** → Lee `docs/GUIA_GIT_GITHUB.md` ← **OBLIGATORIO ANTES DE DEPLOY**
+0. ✅ **Subir a GitHub** - YA HECHO
 
 **LUEGO:**
-1. ⏳ PASO 1: Activar RLS en Supabase (arriba en este documento)
-2. ⏳ PASO 7: Deploy backend en Render (arriba en este documento)
+1. ✅ PASO 1: Activar RLS en Supabase - YA HECHO por Juan
+2. ⏳ PASO 7: Deploy backend en **Railway** → Lee `docs/GUIA_RAILWAY_DEPLOY.md`
 3. ⏳ PASO 8: Deploy frontend en Cloudflare (arriba en este documento)
 
-**¡El código está listo, ahora toca Git + GitHub + Deploy! 🚀**
+**¡El código está listo y en GitHub, ahora solo falta Railway + Cloudflare! 🚀**
 
 ---
 

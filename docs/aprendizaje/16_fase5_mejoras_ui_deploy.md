@@ -502,7 +502,7 @@ CREATE POLICY "formulas_select_public" ON formulas FOR SELECT USING (true);
 ```
 
 **PASO 7-8:** Deploy (requiere GitHub)
-1. Backend → Render
+1. Backend → Railway.app (sin tarjeta de crédito)
 2. Frontend → Cloudflare Pages
 3. Actualizar URL en `api.js`
 
@@ -511,7 +511,7 @@ CREATE POLICY "formulas_select_public" ON formulas FOR SELECT USING (true);
 0. Subir a GitHub (GUIA_GIT_GITHUB.md) ← OBLIGATORIO
 1. RLS en Supabase
 2-6. Pasos completados por Claude Code ✅
-7. Deploy backend en Render
+7. Deploy backend en Railway (GUIA_RAILWAY_DEPLOY.md)
 8. Deploy frontend en Cloudflare
 ```
 
@@ -519,8 +519,9 @@ CREATE POLICY "formulas_select_public" ON formulas FOR SELECT USING (true);
 
 - ✅ Este archivo (`16_fase5_mejoras_ui_deploy.md`)
 - ✅ `docs/bitacora.md` actualizada
-- ✅ `docs/GUIA_JUAN_PASOS_MANUALES.md` actualizada
-- ✅ `docs/GUIA_GIT_GITHUB.md` creada (nueva)
+- ✅ `docs/GUIA_JUAN_PASOS_MANUALES.md` actualizada con Railway
+- ✅ `docs/GUIA_GIT_GITHUB.md` - Guía Git y GitHub
+- ✅ `docs/GUIA_RAILWAY_DEPLOY.md` - **NUEVA** - Guía Railway.app (sin tarjeta)
 
 ---
 
@@ -543,3 +544,432 @@ CREATE POLICY "formulas_select_public" ON formulas FOR SELECT USING (true);
 La Fase 5 completa las mejoras de experiencia de usuario y prepara la aplicación para producción. Los cambios son principalmente de interfaz (frontend) con configuración para deploy. El proyecto está listo para que Juan ejecute los pasos manuales de seguridad (RLS) y deploy.
 
 **Estado del proyecto:** 🟢 Listo para deploy tras configurar RLS
+
+---
+
+## ANEXO: Diffs de Todos los Cambios (Histórico Completo)
+
+Esta sección documenta TODOS los cambios realizados con formato diff (rojo = antes, verde = después) para poder ver exactamente qué se modificó y por qué.
+
+---
+
+### A.1. Cambio CRÍTICO: Render → Railway (Decisión de Plataforma)
+
+**Archivo:** `docs/GUIA_JUAN_PASOS_MANUALES.md`, `docs/GUIA_RAILWAY_DEPLOY.md`, `frontend/js/api.js`
+
+**Por qué se cambió:**
+- Render comenzó a pedir tarjeta de crédito incluso para plan gratuito
+- Railway ofrece 500 horas gratis SIN tarjeta de crédito
+- Mejor experiencia de usuario para Juan
+
+**Diff en `frontend/js/api.js` (línea 15):**
+```diff
+  const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:8000'
+-     : 'https://TU-BACKEND.onrender.com'; // ❌ Render (requiere tarjeta)
++     : 'https://web-production-daa0.up.railway.app'; // ✅ Backend desplegado en Railway
+```
+
+**Diff conceptual en todas las guías:**
+```diff
+- ## PASO 7: Deploy Backend en Render.com
++ ## PASO 7: Deploy Backend en Railway.app
+
+- **Plataforma:** Render.com
+- ⚠️ Requiere tarjeta de crédito (aunque sea plan gratuito)
++ **Plataforma:** Railway.app
++ ✅ NO requiere tarjeta de crédito
++ ✅ 500 horas gratis al mes
+```
+
+**Archivos afectados:**
+- `docs/GUIA_RAILWAY_DEPLOY.md` → Creado (reemplaza guía de Render)
+- `docs/GUIA_JUAN_PASOS_MANUALES.md` → Actualizado (paso 7)
+- `docs/bitacora.md` → Documentado el cambio
+- `frontend/js/api.js` → URL actualizada
+
+---
+
+### A.2. Inputs Dinámicos por Fórmula
+
+**Archivo:** `frontend/js/app.js`
+
+**Cambio:** Inputs ahora se generan dinámicamente según `formula.variables_usuario`
+
+**Diff (líneas 135-204):**
+```diff
++ // Diccionario de etiquetas amigables para variables
++ const ETIQUETAS_VARIABLES = {
++     'x0': { label: 'Posición inicial x₀', placeholder: 'metros', unidad: 'm' },
++     'y0': { label: 'Posición inicial y₀', placeholder: 'metros', unidad: 'm' },
++     'v': { label: 'Velocidad', placeholder: 'm/s', unidad: 'm/s' },
++     'v0': { label: 'Velocidad inicial', placeholder: 'm/s', unidad: 'm/s' },
++     'a': { label: 'Aceleración a', placeholder: 'm/s²', unidad: 'm/s²' },
++     // ... 18 variables total
++ };
+
+  function generarInputsDinamicos(formula) {
+      const container = document.getElementById('inputsContainer');
+      container.innerHTML = '';
+
+-     // ANTES: Hardcodeado - siempre mostraba x0 y v
+-     const inputs = [
+-         { nombre: 'x0', label: 'Posición inicial', valor: 0 },
+-         { nombre: 'v', label: 'Velocidad', valor: 5 }
+-     ];
+
++     // DESPUÉS: Dinámico - lee de formula.variables_usuario
++     const variables = formula.variables_usuario || {};
++
++     Object.entries(variables).forEach(([nombreVar, valorDefecto]) => {
++         const config = ETIQUETAS_VARIABLES[nombreVar] || {
++             label: nombreVar,  // Fallback: usar nombre técnico
++             placeholder: 'valor',
++             unidad: ''
++         };
++
++         // Crear input con label personalizada
++         const inputHTML = `
++             <div class="form-control">
++                 <label class="label">
++                     <span class="label-text text-blue-300">${config.label}</span>
++                 </label>
++                 <input type="number" name="${nombreVar}" value="${valorDefecto}"
++                        class="input input-bordered bg-slate-700"
++                        placeholder="${config.placeholder}">
++             </div>
++         `;
++         container.innerHTML += inputHTML;
++     });
+  }
+```
+
+**Resultado:**
+- ✅ MRU muestra: "Posición inicial x₀", "Velocidad"
+- ✅ Parábola muestra: "Coeficiente a", "Coeficiente b", "Coeficiente c"
+- ✅ Cardioide muestra: "Radio a"
+
+---
+
+### A.3. Sliders para Rangos (t_min, t_max)
+
+**Archivo:** `frontend/js/app.js`
+
+**Cambio:** Inputs numéricos → Sliders HTML5
+
+**Diff (líneas 206-261):**
+```diff
+  // Generar inputs para rangos (t_min, t_max)
+  const rangoMin = {
+      nombre: `${formula.variable_rango}_min`,
+      label: `${formula.variable_rango} mínimo`,
+      valor: formula.rango_min || 0,
++     min: formula.rango_min !== null ? formula.rango_min - 10 : -10,
++     max: formula.rango_max !== null ? formula.rango_max : 100
+  };
+
+- // ANTES: Input numérico simple
+- const inputHTML = `
+-     <input type="number" name="${rangoMin.nombre}" value="${rangoMin.valor}">
+- `;
+
++ // DESPUÉS: Slider con display del valor
++ const sliderHTML = `
++     <div class="form-control">
++         <label class="label">
++             <span class="label-text text-blue-300">${rangoMin.label}</span>
++             <span id="valor-${rangoMin.nombre}" class="label-text-alt text-slate-400">
++                 ${rangoMin.valor}
++             </span>
++         </label>
++         <input type="range"
++                name="${rangoMin.nombre}"
++                min="${rangoMin.min}"
++                max="${rangoMin.max}"
++                value="${rangoMin.valor}"
++                class="range range-primary range-sm"
++                id="slider-${rangoMin.nombre}">
++     </div>
++ `;
+
++ // Event listener para actualizar display en tiempo real
++ setTimeout(() => {
++     const slider = document.getElementById(`slider-${rangoMin.nombre}`);
++     const valorDisplay = document.getElementById(`valor-${rangoMin.nombre}`);
++
++     slider.addEventListener('input', (e) => {
++         valorDisplay.textContent = e.target.value;
++     });
++ }, 100);
+```
+
+**Resultado:**
+- ✅ Sliders interactivos con valor visible
+- ✅ Configuración dinámica de min/max según fórmula
+- ✅ Actualización del valor en tiempo real al mover el slider
+
+---
+
+### A.4. Layout Invertido (Gráfica Grande a la Izquierda)
+
+**Archivo:** `frontend/index.html`
+
+**Cambio:** Inversión de columnas en grid
+
+**Diff (líneas 85-160):**
+```diff
+  <!-- Grid principal: 2 columnas en desktop, 1 en móvil -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+-     <!-- ANTES: Controles a la izquierda (lg:col-span-1) -->
+-     <div class="lg:col-span-1">
+-         <div class="card bg-slate-800">
+-             <!-- Controles -->
+-         </div>
+-     </div>
+
+-     <!-- ANTES: Gráfico a la derecha (lg:col-span-2) -->
+-     <div class="lg:col-span-2">
+-         <div class="card bg-slate-800">
+-             <div id="graficoContainer"></div>
+-         </div>
+-     </div>
+
++     <!-- DESPUÉS: Gráfico a la IZQUIERDA (lg:col-span-2 = 2/3 ancho) -->
++     <div class="lg:col-span-2">
++         <div class="card bg-slate-800 shadow-xl">
++             <div class="card-body">
++                 <h2 class="card-title text-blue-400">Visualización</h2>
++                 <div id="graficoContainer" style="min-height: 500px;"></div>
++             </div>
++         </div>
++     </div>
+
++     <!-- DESPUÉS: Controles a la DERECHA (lg:col-span-1 = 1/3 ancho) -->
++     <div class="lg:col-span-1">
++         <div class="card bg-slate-800 shadow-xl">
++             <div class="card-body">
++                 <h2 class="card-title text-blue-400">Configuración</h2>
++                 <!-- Selector de fórmula -->
++                 <!-- Inputs dinámicos -->
++                 <!-- Sliders -->
++                 <!-- Botón calcular -->
++                 <!-- Historial colapsable ← NUEVO -->
++             </div>
++         </div>
++     </div>
+  </div>
+```
+
+**Resultado:**
+- ✅ Gráfico ahora ocupa 66% del ancho (prominente)
+- ✅ Controles compactos en 33% del ancho
+- ✅ Mejor jerarquía visual (lo importante es grande)
+
+---
+
+### A.5. Historial Lateral Colapsable
+
+**Archivo:** `frontend/index.html` + `frontend/js/app.js`
+
+**Cambio 1: HTML - Mover historial al panel derecho**
+
+**Diff en `index.html` (líneas 158-179):**
+```diff
+- <!-- ANTES: Historial en sección separada al fondo -->
+- <section class="mb-8">
+-     <div class="card bg-slate-800">
+-         <div class="card-body">
+-             <h2 class="card-title">Historial de Cálculos</h2>
+-             <div id="historialContainer" class="flex gap-4 overflow-x-auto">
+-                 <!-- Cards horizontales -->
+-             </div>
+-         </div>
+-     </div>
+- </section>
+
++ <!-- DESPUÉS: Historial dentro del panel de controles (derecha) -->
++ <div class="lg:col-span-1">
++     <div class="card bg-slate-800">
++         <div class="card-body">
++             <!-- Controles... -->
++
++             <!-- Historial colapsable -->
++             <div class="collapse collapse-arrow bg-slate-700 mt-6 border border-slate-600">
++                 <input type="checkbox" id="toggleHistorial" />
++                 <div class="collapse-title text-sm font-medium text-blue-400">
++                     Historial
++                 </div>
++                 <div class="collapse-content">
++                     <div id="historialContainer" class="space-y-2 max-h-96 overflow-y-auto">
++                         <!-- Cards verticales -->
++                     </div>
++                 </div>
++             </div>
++         </div>
++     </div>
++ </div>
+```
+
+**Cambio 2: JavaScript - Layout vertical en lugar de horizontal**
+
+**Diff en `app.js` (líneas 357-392):**
+```diff
+  function mostrarHistorial(historial) {
+      const container = document.getElementById('historialContainer');
+
+-     // ANTES: Cards horizontales (flex-row)
+-     const cardsHTML = historial.map((calculo, index) => {
+-         return `
+-             <div class="card card-compact bg-slate-700 w-64 shrink-0">
+-                 <div class="card-body">
+-                     <h3>${formula.nombre}</h3>
+-                     <div id="miniatura-${index}" class="h-24"></div>
+-                 </div>
+-             </div>
+-         `;
+-     }).join('');
+
++     // DESPUÉS: Cards verticales (stack)
++     const cardsHTML = historial.map((calculo, index) => {
++         return `
++             <div class="card bg-slate-600 shadow-md hover:bg-slate-500 cursor-pointer">
++                 <div class="card-body p-3">
++                     <h3 class="text-xs font-semibold text-blue-300 truncate">
++                         ${formula.nombre}
++                     </h3>
++                     <div id="miniatura-${index}" class="h-16 mt-2 rounded bg-slate-700"></div>
++                 </div>
++             </div>
++         `;
++     }).join('');
+
+      container.innerHTML = cardsHTML;
+
+-     // ANTES: Miniaturas grandes (h-24 = 96px)
++     // DESPUÉS: Miniaturas pequeñas (h-16 = 64px)
+      historial.forEach((calculo, index) => {
+          const miniaturaId = `miniatura-${index}`;
+          // Renderizar Plotly en miniatura...
+      });
+  }
+```
+
+**Resultado:**
+- ✅ Historial en sidebar (ahorra espacio vertical)
+- ✅ Colapsable (ocultar cuando no se usa)
+- ✅ Layout vertical adaptado al espacio disponible
+- ✅ Miniaturas más pequeñas pero visibles
+
+---
+
+### A.6. Detección de Entorno (Localhost vs Producción)
+
+**Archivo:** `frontend/js/api.js`
+
+**Cambio:** Detectar automáticamente si estamos en desarrollo o producción
+
+**Diff (líneas 11-15):**
+```diff
+  // Configuración de la API
+- // ANTES: URL hardcodeada
+- const API_BASE = 'http://localhost:8000';
+
++ // DESPUÉS: Detección automática de entorno
++ const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
++     ? 'http://localhost:8000'  // Desarrollo
++     : 'https://web-production-daa0.up.railway.app';  // Producción (Railway)
+```
+
+**Resultado:**
+- ✅ En localhost: usa `http://localhost:8000`
+- ✅ En producción (formulas-web.pages.dev): usa Railway
+- ✅ No necesita cambiar código para deploy
+
+---
+
+### A.7. Procfile para Railway
+
+**Archivo:** `Procfile` (NUEVO)
+
+**Creado desde cero:**
+```diff
++ web: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+```
+
+**Desglose del comando:**
+- `web:` → Tipo de proceso (servidor web HTTP)
+- `uvicorn` → Servidor ASGI para FastAPI
+- `backend.main:app` → Ruta al objeto FastAPI (carpeta.archivo:variable)
+- `--host 0.0.0.0` → Escuchar en todas las interfaces de red (necesario para Railway)
+- `--port $PORT` → Usar puerto dinámico asignado por Railway
+
+**Por qué se necesita:**
+- Railway lee el Procfile para saber CÓMO ejecutar la aplicación
+- Sin Procfile, Railway no sabría qué comando usar
+
+---
+
+### A.8. Verificación de .gitignore
+
+**Archivo:** `.gitignore`
+
+**NO se modificó** (ya estaba correcto), pero se verificó que contiene:
+
+```gitignore
+# Archivos de entorno (SECRETOS - nunca subir)
+.env
+
+# Entorno virtual de Python
+venv/
+env/
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Información local (notas personales)
+_local_info/
+
+# Chats guardados (antes de compactar)
+docs/chats_register/
+```
+
+**Por qué es importante:**
+- `.env` contiene credenciales de Supabase → NO debe subirse a GitHub
+- `venv/` son 500MB de bibliotecas → innecesario en GitHub
+- `__pycache__/` son archivos temporales → no versionables
+
+---
+
+## Resumen de Cambios por Archivo
+
+| Archivo | Líneas Modificadas | Tipo de Cambio |
+|---------|-------------------|----------------|
+| `frontend/js/app.js` | ~100 | Inputs dinámicos + sliders + historial vertical |
+| `frontend/index.html` | ~30 | Layout invertido + historial colapsable |
+| `frontend/js/api.js` | 4 | Detección de entorno |
+| `Procfile` | 1 (creado) | Configuración deploy Railway |
+| `.gitignore` | 0 (verificado) | Sin cambios necesarios |
+| **Total** | **~135** | **5 archivos afectados** |
+
+---
+
+## Documentación Generada por los Cambios
+
+| Documento | Estado | Propósito |
+|-----------|--------|-----------|
+| `docs/GUIA_RAILWAY_DEPLOY.md` | ✅ Creado (~500 líneas) | Guía deploy Railway "para tontos" |
+| `docs/GUIA_CLOUDFLARE_PAGES_DEPLOY.md` | ✅ Creado (~600 líneas) | Guía Cloudflare Pages vs Workers |
+| `docs/GUIA_GIT_GITHUB.md` | ✅ Creado (~250 líneas) | Guía Git y GitHub desde cero |
+| `docs/PROBLEMAS_Y_MEJORAS_FASE6.md` | ✅ Creado (~500 líneas) | Bugs detectados + mejoras pendientes |
+| `docs/bitacora.md` | ✅ Actualizado (+120 líneas) | Entrada Fase 5 completada |
+| `docs/GUIA_JUAN_PASOS_MANUALES.md` | ✅ Actualizado | Railway en lugar de Render |
+| Este archivo (`16_fase5_mejoras_ui_deploy.md`) | ✅ Creado (~700 líneas) | Documentación socrática completa |
+
+**Total documentación:** ~3170 líneas de MD técnico detallado
+
+---
+
+*Anexo añadido: 7 Enero 2026 - Histórico completo de cambios con diffs*

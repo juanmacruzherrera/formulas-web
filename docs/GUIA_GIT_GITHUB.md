@@ -1,12 +1,12 @@
 # GUÍA: Subir el Proyecto a GitHub
 
-**IMPORTANTE:** Debes hacer esto ANTES de los pasos 7-8 (deploy en Render/Cloudflare)
+**IMPORTANTE:** Debes hacer esto ANTES de los pasos 7-8 (deploy en Railway/Cloudflare)
 
 ---
 
 ## ¿Por qué necesitamos GitHub?
 
-Tanto Render como Cloudflare Pages se conectan directamente a repositorios de GitHub para obtener el código y desplegarlo automáticamente.
+Tanto Railway como Cloudflare Pages se conectan directamente a repositorios de GitHub para obtener el código y desplegarlo automáticamente.
 
 **Sin GitHub → No puedes hacer deploy automático**
 
@@ -74,7 +74,7 @@ git commit -m "Fase 5 completa: Aplicación lista para deploy
 - Historial lateral colapsable
 - Backend FastAPI + Supabase
 - Frontend Plotly.js + MathJax
-- Preparado para deploy en Render + Cloudflare Pages"
+- Preparado para deploy en Railway + Cloudflare Pages"
 ```
 
 Verás algo como: `XX files changed, XXXX insertions(+)`
@@ -95,8 +95,8 @@ Verás algo como: `XX files changed, XXXX insertions(+)`
    - **Repository name:** `formulas-web` (o el nombre que prefieras)
    - **Description:** "Aplicación web para visualizar fórmulas matemáticas y físicas interactivas"
    - **Visibilidad:**
-     - ✅ **Public** (recomendado - funciona con Render/Cloudflare gratis)
-     - ⚠️ Private (solo si tienes plan de pago en Render)
+     - ✅ **Public** (recomendado - funciona con Railway/Cloudflare gratis)
+     - ⚠️ Private (Railway gratis permite privados, pero más fácil en público)
    - **NO marques:** "Initialize with README" (ya tienes código)
    - Click "Create repository"
 
@@ -199,7 +199,7 @@ git commit -m "Descripción de lo que cambiaste"
 git push
 ```
 
-**Render y Cloudflare se actualizarán automáticamente** cuando hagas `git push` 🚀
+**Railway y Cloudflare se actualizarán automáticamente** cuando hagas `git push` 🚀
 
 ---
 
@@ -211,7 +211,7 @@ git push
 3. ✅ Crear repo en GitHub
 4. ✅ Conectar local con GitHub (git remote add origin)
 5. ✅ Subir código (git push -u origin main)
-6. ⏳ Deploy backend en Render (conecta GitHub)
+6. ⏳ Deploy backend en Railway (conecta GitHub)
 7. ⏳ Deploy frontend en Cloudflare (conecta GitHub)
 ```
 
